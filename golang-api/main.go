@@ -9,7 +9,7 @@ import (
 
 type (
 	Response struct {
-		Env interface{} `json:"env"`
+		Env map[string]interface{} `json:"env"`
 	}
 )
 
@@ -17,10 +17,15 @@ func main() {
 	app := http.NewServeMux()
 
 	app.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		env := Response{
-			Env: os.Getenv("MESSAGE"),
+		env := map[string]interface{}{
+			"MESSAGE":     os.Getenv("MESSAGE"),
+			"SECRET_FILE": os.Getenv("SECRET_FILE"),
 		}
-		byteEnv, _ := json.Marshal(env)
+		envResponse := Response{
+			Env: env,
+		}
+		byteEnv, _ := json.Marshal(envResponse)
+
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(byteEnv)
 	})

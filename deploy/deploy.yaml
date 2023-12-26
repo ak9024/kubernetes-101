@@ -64,7 +64,7 @@ spec:
       hostname: golang-api
       containers:
         - name: golang-api
-          image: golang-api:v2
+          image: golang-api:v3
           imagePullPolicy: IfNotPresent
           ports:
             - name: golang-api-port
