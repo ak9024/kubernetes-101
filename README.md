@@ -9,3 +9,4 @@
 - https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
 - https://kubernetes.io/docs/concepts/configuration/secret/
 - https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+- https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/

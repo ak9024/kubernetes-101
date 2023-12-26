@@ -4,7 +4,9 @@ metadata:
   name: dotfile-secret
   namespace: kubernetes-101
 data:
+  # need to convert that value to base64
   .secret-file: Z29sYW5nLWFwaS1zZWNyZXQK
+  secret-value: aGVsbG8gdGVzdAo=
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -13,6 +15,26 @@ metadata:
   namespace: kubernetes-101
 data:
   CONFIG: setup config using config map
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: golang-api
+  namespace: kubernetes-101
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: golang-api
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,19 +61,44 @@ spec:
       containers:
         - name: golang-api
           image: golang-api:v1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "54Mi"
+              cpu: "250m"
+            limits:
+              memory: "54Mi"
+              cpu: "250m"
           env:
             - name: MESSAGE
               value: hello world
+            # get env from secret
+            - name: SECRET_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: dotfile-secret
+                  key: .secret-file
+            - name: SECRET_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: dotfile-secret
+                  key: secret-value
+          # get env from configmap
           envFrom:
             - configMapRef:
                 name: special-config
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
-          volumeMounts:
-            - name: secret-volume
-              readOnly: true
-              mountPath: "/etc/secret-volume"
+          # mapping secret to pod
+          # volumeMounts:
+          #   - name: secret-volume
+          #     readOnly: true
+          #     mountPath: "/etc/secret-volume"
 ---
 apiVersion: v1
 kind: Service
