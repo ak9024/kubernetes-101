@@ -14,6 +14,7 @@ metadata:
   name: file-config
   namespace: kubernetes-101
 data:
+  # create configmap to prepare configuration than insert to pod
   config.yaml: |
     config_key=config_value
 ---
@@ -28,20 +29,20 @@ spec:
     kind: Deployment
     name: golang-api
   minReplicas: 1
-  maxReplicas: 3
+  maxReplicas: 3 # maximum replicas
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 50 # if cpu utilization greater than 50% exec autoscaling
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 50 # if memory utilization greater than 50% exec autoscaling
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -64,6 +65,10 @@ spec:
       containers:
         - name: golang-api
           image: golang-api:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: golang-api-port
+              containerPort: 8000
           livenessProbe:
             httpGet:
               path: /health
@@ -82,28 +87,24 @@ spec:
           env:
             - name: MESSAGE
               value: hello world
-            # get env from secret
+            # get env from secret path
             - name: SECRET_FILE
               valueFrom:
                 secretKeyRef:
                   name: dotfile-secret
                   key: .env
-          # get env from configmap
+          # get env from configmap path
           envFrom:
             - configMapRef:
                 name: file-config
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: golang-api-port
-              containerPort: 8000
-          # mapping secret to pod
+          # mapping secret & configmap to pod
           volumeMounts:
             - name: secret-volume
               readOnly: true
-              mountPath: "/secret"
+              mountPath: "/secret" # setup secret path
             - name: config
               readOnly: true
-              mountPath: "/config"
+              mountPath: "/config" # setup config path
       volumes:
         - name: secret-volume
           secret:
@@ -127,4 +128,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: golang-api-port
-  type: LoadBalancer
+  type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
