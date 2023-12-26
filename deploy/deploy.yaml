@@ -5,16 +5,17 @@ metadata:
   namespace: kubernetes-101
 data:
   # need to convert that value to base64
-  .secret-file: Z29sYW5nLWFwaS1zZWNyZXQK
-  secret-value: aGVsbG8gdGVzdAo=
+  # cat ../secret/.env | base64
+  .env: c2VjcmV0X2tleT1zZWNyZXRfdmFsdWUK
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: special-config
+  name: file-config
   namespace: kubernetes-101
 data:
-  CONFIG: setup config using config map
+  config.yaml: |
+    config_key=config_value
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -35,6 +36,12 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 50
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,16 +54,12 @@ spec:
   selector:
     matchLabels:
       app: golang-api
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
         app: golang-api
     spec:
-      volumes:
-        - name: secret-volume
-          secret:
-            secretName: dotfile-secret
       hostname: golang-api
       containers:
         - name: golang-api
@@ -84,16 +87,11 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: dotfile-secret
-                  key: .secret-file
-            - name: SECRET_VALUE
-              valueFrom:
-                secretKeyRef:
-                  name: dotfile-secret
-                  key: secret-value
+                  key: .env
           # get env from configmap
           envFrom:
             - configMapRef:
-                name: special-config
+                name: file-config
           imagePullPolicy: IfNotPresent
           ports:
             - name: golang-api-port
@@ -102,7 +100,20 @@ spec:
           volumeMounts:
             - name: secret-volume
               readOnly: true
-              mountPath: "/etc/secret-volume"
+              mountPath: "/secret"
+            - name: config
+              readOnly: true
+              mountPath: "/config"
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: dotfile-secret
+        - name: config
+          configMap:
+            name: file-config
+            items:
+            - key: "config.yaml"
+              path: "config.yaml"
 ---
 apiVersion: v1
 kind: Service
