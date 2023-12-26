@@ -64,8 +64,10 @@ spec:
           livenessProbe:
             httpGet:
               path: /health
-              port: 8080
+              port: golang-api-port
             periodSeconds: 10
+            failureThreshold: 1
+            successThreshold: 1
           resources:
             requests:
               memory: "54Mi"
@@ -93,7 +95,9 @@ spec:
                 name: special-config
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
+            - name: golang-api-port
+              containerPort: 8000
+              hostPort: 8000
           # mapping secret to pod
           # volumeMounts:
           #   - name: secret-volume
@@ -112,4 +116,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8000
+      targetPort: golang-api-port 
+      nodePort: 30000
