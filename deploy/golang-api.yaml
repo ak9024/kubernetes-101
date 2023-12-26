@@ -117,4 +117,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: golang-api-port 
-      nodePort: 30000
+      nodePort: 30000 # expose static port to node
