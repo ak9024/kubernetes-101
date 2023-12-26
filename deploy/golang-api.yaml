@@ -47,7 +47,7 @@ spec:
   selector:
     matchLabels:
       app: golang-api
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -60,12 +60,13 @@ spec:
       hostname: golang-api
       containers:
         - name: golang-api
-          image: golang-api:v1
+          image: golang-api:v2
           livenessProbe:
             httpGet:
               path: /health
               port: golang-api-port
             periodSeconds: 10
+            timeoutSeconds: 10
             failureThreshold: 1
             successThreshold: 1
           resources:
@@ -97,12 +98,11 @@ spec:
           ports:
             - name: golang-api-port
               containerPort: 8000
-              hostPort: 8000
           # mapping secret to pod
-          # volumeMounts:
-          #   - name: secret-volume
-          #     readOnly: true
-          #     mountPath: "/etc/secret-volume"
+          volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/etc/secret-volume"
 ---
 apiVersion: v1
 kind: Service
