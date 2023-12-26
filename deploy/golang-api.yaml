@@ -110,11 +110,10 @@ metadata:
   name: golang-api-service
   namespace: kubernetes-101
 spec:
-  type: NodePort
   selector:
     app: golang-api
   ports:
     - protocol: TCP
       port: 80
-      targetPort: golang-api-port 
-      nodePort: 30000 # expose static port to node
+      targetPort: golang-api-port
+  type: LoadBalancer
