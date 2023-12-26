@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dotfile-secret
+  namespace: kubernetes-101
+data:
+  .secret-file: Z29sYW5nLWFwaS1zZWNyZXQK
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-config
+  namespace: kubernetes-101
+data:
+  CONFIG: setup config using config map
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-api-deployment
+  namespace: kubernetes-101
+  labels:
+    app: golang-api
+spec:
+  selector:
+    matchLabels:
+      app: golang-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: golang-api
+    spec:
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: dotfile-secret
+      hostname: golang-api
+      containers:
+        - name: golang-api
+          image: golang-api:v1
+          env:
+            - name: MESSAGE
+              value: hello world
+          envFrom:
+            - configMapRef:
+                name: special-config
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/etc/secret-volume"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: golang-api-service
+  namespace: kubernetes-101
+spec:
+  type: NodePort
+  selector:
+    app: golang-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
