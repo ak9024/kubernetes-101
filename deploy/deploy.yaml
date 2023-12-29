@@ -67,12 +67,12 @@ spec:
           image: golang-api:v3
           imagePullPolicy: IfNotPresent
           ports:
-            - name: golang-api-port
+            - name: http-golang-api
               containerPort: 8000
           livenessProbe:
             httpGet:
               path: /health
-              port: golang-api-port
+              port: http-golang-api
             periodSeconds: 10
             timeoutSeconds: 10
             failureThreshold: 1
@@ -125,7 +125,8 @@ spec:
   selector:
     app: golang-api
   ports:
-    - protocol: TCP
+    - name: http-golang-api-service
+      protocol: TCP
       port: 80
-      targetPort: golang-api-port
-  type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
+      targetPort: http-golang-api
+      type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
