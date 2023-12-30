@@ -3,6 +3,9 @@ kind: Secret
 metadata:
   name: dotfile-secret
   namespace: kubernetes-101
+  labels:
+    app: golang-api
+    environment: production
 data:
   # need to convert that value to base64
   # cat ../secret/.env | base64
@@ -13,6 +16,9 @@ kind: ConfigMap
 metadata:
   name: file-config
   namespace: kubernetes-101
+  labels:
+    app: golang-api
+    environment: production
 data:
   # create configmap to prepare configuration than insert to pod
   config.yaml: |
@@ -23,6 +29,9 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: golang-api
   namespace: kubernetes-101
+  labels:
+    app: golang-api
+    environment: production
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -51,15 +60,18 @@ metadata:
   namespace: kubernetes-101
   labels:
     app: golang-api
+    environment: production
 spec:
   selector:
     matchLabels:
       app: golang-api
+      environment: production
   replicas: 1
   template:
     metadata:
       labels:
         app: golang-api
+        environment: production
     spec:
       hostname: golang-api
       containers:
@@ -121,12 +133,16 @@ kind: Service
 metadata:
   name: golang-api-service
   namespace: kubernetes-101
+  labels:
+    app: golang-api
+    environment: production
 spec:
   selector:
     app: golang-api
+    environment: production
   ports:
     - name: http-golang-api-service
       protocol: TCP
       port: 80
       targetPort: http-golang-api
-      type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
+  type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
