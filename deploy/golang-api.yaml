@@ -159,8 +159,9 @@ spec:
   #   service: 
   #     name: golang-api-service
   #     port:
-  #       name: http
+  #       port: 80
   ingressClassName: nginx
+  # https://kubernetes.io/docs/concepts/services-networking/ingress/#simple-fanout
   rules:
     - host: adiatma.local
       http:
