@@ -36,7 +36,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: golang-api
+    name: golang-api-deployment
   minReplicas: 1
   maxReplicas: 3 # maximum replicas
   metrics:
@@ -45,13 +45,7 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50 # if cpu utilization greater than 50% exec autoscaling
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 50 # if memory utilization greater than 50% exec autoscaling
+        averageUtilization: 10 # if cpu utilization greater than 50% exec autoscaling
 ---
 apiVersion: apps/v1
 kind: Deployment

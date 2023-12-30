@@ -16,6 +16,11 @@ kubectl apply -f deploy/golang-api.yaml
 ```
 
 ```bash
+# enable metrics api
+kubectl apply -f deploy/compoonents.yaml
+```
+
+```bash
 # install ingress-nginx with helm
 helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
