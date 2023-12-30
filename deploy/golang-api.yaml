@@ -170,5 +170,5 @@ spec:
               name: golang-api-service
               port:
                 number: 80
-           path: /
+           path: /api
            pathType: Prefix

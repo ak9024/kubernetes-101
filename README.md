@@ -28,7 +28,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ```bash
 # vi /etc/hosts
 # 127.0.0.1 adiatma.local
-curl https://adiatma.local
+curl http://adiatma.local/api
 ```
 
 ### References
