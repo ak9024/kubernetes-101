@@ -10,6 +10,7 @@
 cd golang-api
 docker build -t golang-api:v1 -f Dockerfile .
 cd ..
+# create namespace
 kubectl create namespace kubernetes-101
 kubectl apply -f deploy/golang-api.yaml
 ```
@@ -37,3 +38,4 @@ curl http://adiatma.local/api
 - https://kubernetes.io/docs/concepts/configuration/secret/
 - https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
 - https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+- https://kubernetes.github.io/ingress-nginx/deploy/#quick-start
