@@ -105,6 +105,8 @@ spec:
                 name: config
           # mapping secret & configmap to pod
           volumeMounts:
+            - name: empty-volume
+              mountPath: /volume
             - name: secret-config
               readOnly: true
               mountPath: "/secret" # setup secret path
@@ -112,6 +114,8 @@ spec:
               readOnly: true
               mountPath: "/config" # setup config path
       volumes:
+        - name: empty-volume
+          emptyDir: {}
         - name: secret-config
           secret:
             secretName: secret-config
