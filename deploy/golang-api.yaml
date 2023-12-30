@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: dotfile-secret
+  name: secret-config
   namespace: kubernetes-101
   labels:
     app: golang-api
@@ -14,7 +14,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: file-config
+  name: config
   namespace: kubernetes-101
   labels:
     app: golang-api
@@ -100,30 +100,30 @@ spec:
             - name: MESSAGE
               value: hello world
             # get env from secret path
-            - name: SECRET_FILE
+            - name: SECRET_CONFIG
               valueFrom:
                 secretKeyRef:
-                  name: dotfile-secret
+                  name: secret-config
                   key: .env
           # get env from configmap path
           envFrom:
             - configMapRef:
-                name: file-config
+                name: config
           # mapping secret & configmap to pod
           volumeMounts:
-            - name: secret-volume
+            - name: secret-config
               readOnly: true
               mountPath: "/secret" # setup secret path
             - name: config
               readOnly: true
               mountPath: "/config" # setup config path
       volumes:
-        - name: secret-volume
+        - name: secret-config
           secret:
-            secretName: dotfile-secret
+            secretName: secret-config
         - name: config
           configMap:
-            name: file-config
+            name: config
             items:
             - key: "config.yaml"
               path: "config.yaml"
@@ -141,8 +141,34 @@ spec:
     app: golang-api
     environment: production
   ports:
-    - name: http-golang-api-service
-      protocol: TCP
+    - protocol: TCP
       port: 80
       targetPort: http-golang-api
-  type: LoadBalancer # default ClusterIP, options: NodePort, LoadBalancer
+  type: NodePort # default ClusterIP, options: NodePort, LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: golang-api-ingress
+  namespace: kubernetes-101
+  labels:
+    app: golang-api
+    environment: production
+spec:
+  # defaultBackend:
+  #   service: 
+  #     name: golang-api-service
+  #     port:
+  #       name: http
+  ingressClassName: nginx
+  rules:
+    - host: adiatma.local
+      http:
+        paths:
+         - backend:
+            service:
+              name: golang-api-service
+              port:
+                number: 80
+           path: /
+           pathType: Prefix

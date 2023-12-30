@@ -6,11 +6,29 @@
 
 ### Getting Started
 
-```
+```bash
 cd golang-api
 docker build -t golang-api:v1 -f Dockerfile .
 cd ..
+kubectl create namespace kubernetes-101
 kubectl apply -f deploy/golang-api.yaml
+```
+
+```bash
+# install ingress-nginx with helm
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+
+# install ingress-nginx without helm
+kubectl create namespace ingress-nginx
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml
+```
+
+```bash
+# vi /etc/hosts
+# 127.0.0.1 adiatma.local
+curl https://adiatma.local
 ```
 
 ### References
