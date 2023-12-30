@@ -18,8 +18,8 @@ func main() {
 
 	app.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		env := map[string]interface{}{
-			"MESSAGE":     os.Getenv("MESSAGE"),
-			"SECRET_FILE": os.Getenv("SECRET_FILE"),
+			"MESSAGE":       os.Getenv("MESSAGE"),
+			"SECRET_CONFIG": os.Getenv("SECRET_CONFIG"),
 		}
 		envResponse := Response{
 			Env: env,
