@@ -70,14 +70,14 @@ spec:
       hostname: golang-api
       containers:
         - name: golang-api
-          image: golang-api:v4
+          image: adiatma/golang-api
           imagePullPolicy: IfNotPresent
           ports:
             - name: http-golang-api
               containerPort: 8000
           livenessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http-golang-api
             periodSeconds: 10
             timeoutSeconds: 10
@@ -160,7 +160,7 @@ spec:
     - host: adiatma.local
       http:
         paths:
-         - path: /api
+         - path: /
            pathType: Prefix
            backend:
             service:
