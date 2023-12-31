@@ -7,17 +7,14 @@
 ### Getting Started
 
 ```bash
-cd golang-api
-docker build -t golang-api:v1 -f Dockerfile .
-cd ..
 # create namespace
 kubectl create namespace kubernetes-101
-kubectl apply -f deploy/golang-api.yaml
+kubectl apply -f deploy
 ```
 
 ```bash
 # enable metrics api
-kubectl apply -f deploy/compoonents.yaml
+kubectl apply -f kube-system/compoonents.yaml
 ```
 
 ```bash
