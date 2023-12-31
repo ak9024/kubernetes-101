@@ -13,11 +13,13 @@ kubectl apply -f deploy
 ```
 
 ```bash
-# enable metrics api
+# enable metrics-server for CPU/Memory based for HPA
+# https://github.com/kubernetes-sigs/metrics-server
 kubectl apply -f kube-system/compoonents.yaml
 ```
 
 ```bash
+# https://github.com/kubernetes/ingress-nginx
 # install ingress-nginx with helm
 helm upgrade --install ingress-nginx ingress-nginx \
   --repo https://kubernetes.github.io/ingress-nginx \
@@ -31,7 +33,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ```bash
 # vi /etc/hosts
 # 127.0.0.1 adiatma.local
-curl http://adiatma.local/api
+curl http://adiatma.local
 ```
 
 ### References
