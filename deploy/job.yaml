@@ -1,0 +1,15 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: golang-api-migration
+  namespace: kubernetes-101
+spec:
+  ttlSecondsAfterFinished: 100 # automatically deleted, 10 seconds after it finishes
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migration
+          image: ubuntu:22.04
+          command: ["echo", "Run migration"]

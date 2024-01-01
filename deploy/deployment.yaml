@@ -12,7 +12,11 @@ spec:
     matchLabels:
       app: golang-api
       environment: production
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -20,6 +24,13 @@ spec:
         environment: production
     spec:
       hostname: golang-api
+      initContainers:
+        - name: init-db
+          image: busybox:1.28
+          command:
+          - /bin/sh
+          - -c
+          - date; echo hello world
       containers:
         - name: golang-api
           image: adiatma/golang-api
