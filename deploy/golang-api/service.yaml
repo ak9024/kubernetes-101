@@ -4,6 +4,10 @@ kind: Service
 metadata:
   name: golang-api-service
   namespace: kubernetes-101
+  annotations:
+    prometheus.io/scheme: 'http'
+    prometheus.io/scrape: 'true'
+    prometheus.io/port:   '8000'
   labels:
     app: golang-api
     environment: production
@@ -12,7 +16,8 @@ spec:
     app: golang-api
     environment: production
   ports:
-    - protocol: TCP
-      port: 80
+    - name: http-golang-api-service
+      protocol: TCP
+      port: 8000
       targetPort: http-golang-api
   type: ClusterIP # default ClusterIP, options: NodePort, LoadBalancer

@@ -34,7 +34,7 @@ spec:
       containers:
         - name: golang-api
           image: adiatma/golang-api
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http-golang-api
               containerPort: 8000

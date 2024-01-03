@@ -10,7 +10,7 @@
 ```bash
 # create namespace
 kubectl create namespace kubernetes-101
-kubectl apply -f deploy
+kubectl apply -f deploy/golang-api
 # option if want to expose service to port 3000
 kubectl port-forward svc/golang-api-service 3000:80
 ```
@@ -28,6 +28,16 @@ minikube addons enable ingress
 curl http://adiatma.local
 
 minikube tunnel
+```
+
+### Monitoring
+
+```bash
+kubectl create namespace monitoring
+k apply -f deploy/monitoring/prometheus
+k apply -f deploy/monitoring/node-exporter
+# enable kube-state-metrics
+k apply -f deploy/kube-system
 ```
 
 ### References
